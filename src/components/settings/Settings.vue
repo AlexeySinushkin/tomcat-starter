@@ -77,7 +77,7 @@ import Dashboard from "./Dashboard.vue";
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
 import BackendApi from "@/backendApi";
-import { Config, ServerRun } from "@/domain/config";
+import { Variables, ServerRun } from "@/domain/config";
 import { IntentionTask, TaskType } from "./intentionTask";
 import { Release } from "@/domain/release.ts";
 import { Platform } from "@/domain/platform";
@@ -94,7 +94,7 @@ enum DisplayMode {
 }
 
 interface State {
-  config: Config;
+  config: Variables;
   runs: ServerRun[];
   mode: DisplayMode;
   globalVarsTask: IntentionTask;

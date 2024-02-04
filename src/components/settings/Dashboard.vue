@@ -135,13 +135,13 @@ const emit = defineEmits<{
 </template>
 
 <script lang="ts">
-import { Config } from "@/domain/config";
+import { Variables } from "@/domain/config";
 import { PropType, defineComponent } from "vue";
 
 export default defineComponent({
   props: {
     config: {
-      type: Object as PropType<Config>,
+      type: Object as PropType<Variables>,
       required: true,
     },
   },

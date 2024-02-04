@@ -1,5 +1,5 @@
 import BackendApi from "./backendApi";
-import { Config, ServerRun } from "@/domain/config";
+import { Variables, ServerRun } from "@/domain/config";
 import { PropertyShape } from "./domain/property";
 import { Release } from "./domain/release";
 import { Platform } from "./domain/platform";
@@ -41,7 +41,7 @@ let runTomcat: Task = new RunTomcat(
 let dedoRun = { serverRunName: "dedo-clean", serverName: "dedo", tasks: [copyRandom, runTomcat] };
 
 export default class BackendApiMockImpl implements BackendApi {
-  getConfig(): Config {
+  getConfig(): Variables {
     return {
       globalVars: [sources],
       releases: [release63],

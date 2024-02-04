@@ -1,6 +1,6 @@
-import { Config, ServerRun } from '@/domain/config'
+import { Variables, ServerRun } from '@/domain/config'
 
 export default interface BackendApi {
-    getConfig() : Config;
+    getConfig() : Variables;
     getRuns() : ServerRun[];
 }
