@@ -8,7 +8,7 @@ import Dashboard from "./Dashboard.vue";
     <v-row>
       <v-col cols="12" v-if="mode === DisplayMode.Dashboard">
         <Dashboard
-          :config="config"
+          :config="vars"
           @edit-global-vars="editGlobalVarsRequested"
           @edit-release="editReleaseRequested"
           @copy-release="copyReleaseRequested"
@@ -77,13 +77,14 @@ import Dashboard from "./Dashboard.vue";
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
 import BackendApi from "@/backendApi";
-import { Variables, ServerRun } from "@/domain/config";
+import { Variables, ServerRun, Configuration, getEmptyConfig } from "@/domain/config";
 import { IntentionTask, TaskType } from "./intentionTask";
 import { Release } from "@/domain/release.ts";
 import { Platform } from "@/domain/platform";
 import { Server } from "@/domain/server";
 import { CommonShape } from "@/domain/commonShape";
 import ServerInstances from "./ServerInstances.vue";
+
 
 enum DisplayMode {
   Dashboard,
@@ -94,7 +95,7 @@ enum DisplayMode {
 }
 
 interface State {
-  config: Variables;
+  vars: Variables;
   runs: ServerRun[];
   mode: DisplayMode;
   globalVarsTask: IntentionTask;
@@ -110,10 +111,11 @@ export default defineComponent({
       required: true,
     },
   },
-  data(): State {
-    return {
-      config: this.api.getConfig(),
-      runs: this.api.getRuns(),
+  data(): State {    
+    let emptyConfig = getEmptyConfig();
+    let result = {
+      vars: emptyConfig.vars,
+      runs: emptyConfig.runs,
       mode: DisplayMode.Dashboard,
       globalVarsTask: new IntentionTask(TaskType.CreateNew, {
         name: "",
@@ -123,17 +125,23 @@ export default defineComponent({
       platformTask: new IntentionTask(TaskType.CreateNew, new Platform("")),
       serverTask: new IntentionTask(TaskType.CreateNew, new Server("")),
     };
+    this.api.getConfig().then((config : Configuration)=>{
+      this.vars = config.vars;
+      this.runs = config.runs;
+    })
+
+    return result;
   },
   methods: {
     editGlobalVarsRequested() {
       this.globalVarsTask = new IntentionTask(TaskType.Edit, {
         name: "",
-        properties: this.config.globalVars,
+        properties: this.vars.globalVars,
       });
       this.mode = DisplayMode.EditGlobalVariables;
     },
     saveGlobalVarsRequested(newValue: CommonShape) {
-      this.config.globalVars = newValue.properties;
+      this.vars.globalVars = newValue.properties;
       this.mode = DisplayMode.Dashboard;
     },
     copyReleaseRequested(release: CommonShape) {
@@ -155,19 +163,19 @@ export default defineComponent({
       this.mode = DisplayMode.EditRelease;
     },
     saveReleaseRequested(newValue: CommonShape, oldValue: Release) {
-      let releases = this.config.releases.filter(
+      let releases = this.vars.releases.filter(
         (r) => r.name !== oldValue.name
       );
       releases.push(newValue);
-      this.config.releases = releases;
+      this.vars.releases = releases;
       this.mode = DisplayMode.Dashboard;
     },
     createReleaseRequested(newValue: CommonShape) {
-      this.config.releases.push(newValue);
+      this.vars.releases.push(newValue);
       this.mode = DisplayMode.Dashboard;
     },
     deleteReleaseRequested(release: CommonShape) {
-      this.config.releases = this.config.releases.filter(
+      this.vars.releases = this.vars.releases.filter(
         (r) => r.name !== release.name
       );
     },
@@ -194,19 +202,19 @@ export default defineComponent({
       this.mode = DisplayMode.EditPlatform;
     },
     savePlatformRequested(newValue: CommonShape, oldValue: Release) {
-      let platforms = this.config.releases.filter(
+      let platforms = this.vars.releases.filter(
         (r) => r.name !== oldValue.name
       );
       platforms.push(newValue);
-      this.config.platforms = platforms;
+      this.vars.platforms = platforms;
       this.mode = DisplayMode.Dashboard;
     },
     createPlatformRequested(newValue: CommonShape) {
-      this.config.platforms.push(newValue);
+      this.vars.platforms.push(newValue);
       this.mode = DisplayMode.Dashboard;
     },
     deletePlatformRequested(release: CommonShape) {
-      this.config.platforms = this.config.platforms.filter(
+      this.vars.platforms = this.vars.platforms.filter(
         (r) => r.name !== release.name
       );
     },
@@ -230,17 +238,17 @@ export default defineComponent({
       this.mode = DisplayMode.EditServer;
     },
     saveServerRequested(newValue: CommonShape, oldValue: Release) {
-      let servers = this.config.servers.filter((r) => r.name !== oldValue.name);
+      let servers = this.vars.servers.filter((r) => r.name !== oldValue.name);
       servers.push(newValue);
-      this.config.servers = servers;
+      this.vars.servers = servers;
       this.mode = DisplayMode.Dashboard;
     },
     createServerRequested(newValue: CommonShape) {
-      this.config.servers.push(newValue);
+      this.vars.servers.push(newValue);
       this.mode = DisplayMode.Dashboard;
     },
     deleteServerRequested(server: CommonShape) {
-      this.config.servers = this.config.servers.filter(
+      this.vars.servers = this.vars.servers.filter(
         (r) => r.name !== server.name
       );
     },
@@ -251,13 +259,14 @@ export default defineComponent({
       this.runs = runs;
     },
     save() {
-      console.log([this.config, this.runs])
+      let config : Configuration = {vars: this.vars, runs: this.runs};
+      this.api.setConfig(config);      
     },    
   },
   computed: {
     availableServerNames() {     
-      return this.config.servers.map((server)=>server.name);
+      return this.vars.servers.map((server)=>server.name);
     } 
   }
 });
-</script>
+</script>, getEmptyConfig

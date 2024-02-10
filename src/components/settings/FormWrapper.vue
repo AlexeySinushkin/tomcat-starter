@@ -57,7 +57,7 @@ export default defineComponent({
   },
   methods: {
     async validate(): Promise<boolean> {
-      const { valid } = await this.$refs.form.validate();
+      const { valid } = await (this.$refs['form'] as any).validate();
       return valid as boolean;
     },
     setValidationErrorText(text: string): void{
@@ -65,11 +65,11 @@ export default defineComponent({
         this.valid = false;
     },
     reset(): void {
-      this.$refs.form.reset();
+      (this.$refs['form'] as any).reset();
     },
     resetValidation(): void {
       this.errorText="";
-      this.$refs.form.resetValidation();
+      (this.$refs['form'] as any).resetValidation();
     },
   },
 });

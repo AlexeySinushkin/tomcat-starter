@@ -74,7 +74,7 @@ export default defineComponent({
       this.$emit("remove", this.prop);
     },
     focusName() {
-        this.$refs.nameInput.focus();
+      (this.$refs['nameInput'] as any).focus();
     },
   },
 });
