@@ -1,5 +1,4 @@
-use std::borrow::Borrow;
-use std::collections::{BTreeMap, HashMap};
+use std::collections::{BTreeMap};
 
 use super::property::Property;
 use super::tasks::{CopyWarToRandomDir, RunTomcat, TaskType};
