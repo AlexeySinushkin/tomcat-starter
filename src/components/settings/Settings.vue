@@ -254,7 +254,6 @@ export default defineComponent({
     },
     save() {
       let config : Configuration = {vars: this.vars, runs: this.runs};
-      console.log(config);
       this.api.setConfig(config);      
     },    
   },

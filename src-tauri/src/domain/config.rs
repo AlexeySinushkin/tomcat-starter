@@ -1,6 +1,6 @@
 use std::collections::{BTreeMap};
 
-use super::property::Property;
+use super::property::{CommonShape, Property};
 use super::tasks::{CopyWarToRandomDir, RunTomcat, TaskType};
 use serde::{Deserialize, Serialize};
 
@@ -8,9 +8,9 @@ use serde::{Deserialize, Serialize};
 pub struct Variables {
     #[serde(rename = "globalVars")]
     pub global_vars: Vec<Property>,
-    pub releases: Vec<Property>,
-    pub platforms: Vec<Property>,
-    pub servers: Vec<Property>,
+    pub releases: Vec<CommonShape>,
+    pub platforms: Vec<CommonShape>,
+    pub servers: Vec<CommonShape>,
 }
 
 pub struct ServerRun {

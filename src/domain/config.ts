@@ -1,5 +1,6 @@
 import { CommonShape } from "./commonShape";
 import { PropertyShape } from "./property";
+import { Release } from "./release";
 import { CopyWarToRandomDir, RunTomcat, Task, TaskType } from "./taskTemplate";
 
 export type Variables = {
@@ -35,7 +36,32 @@ export type ConfigurationDto = {
 
 export function convertToDto(config: Configuration): ConfigurationDto {
   const runs: ServerRunDto[] = [];
-  const configDto: ConfigurationDto = { vars: config.vars, runs };
+  const vars: Variables = {
+    globalVars: [],
+    releases: [],
+    platforms: [],
+    servers: [],
+  };
+
+  config.vars.globalVars.forEach((prop:PropertyShape)=>{
+    const {name, value} = prop;
+    vars.globalVars.push({name, value});
+  });
+  
+  let variableConvert = (src: CommonShape[], dst: CommonShape[])=> {
+    src.forEach((cs:CommonShape)=>{
+      const dto : CommonShape = {name: cs.name, properties:[]};
+      cs.properties.forEach((prop:PropertyShape)=>{
+        const {name, value} = prop;
+        dto.properties.push({name, value});
+      })
+      dst.push(dto);
+    });
+  };
+
+  variableConvert(config.vars.releases, vars.releases);
+  variableConvert(config.vars.platforms, vars.platforms);
+  variableConvert(config.vars.servers, vars.servers);
 
   config.runs.forEach((run) => {
     const warToRandom: CopyWarToRandomDir[] = [];
@@ -61,7 +87,7 @@ export function convertToDto(config: Configuration): ConfigurationDto {
     });
   });
 
-  return configDto;
+  return { vars, runs };
 }
 
 export function convertFromDto(configDto: ConfigurationDto): Configuration {

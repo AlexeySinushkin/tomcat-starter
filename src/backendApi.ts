@@ -20,6 +20,6 @@ export class BackendApiImpl implements BackendApi {
   }
   setConfig(config: Configuration): void {
     let dto = convertToDto(config);
-    invoke("save_config", {config: dto}).then((response) => console.log(response));
+       invoke("save_config", {config: dto}).then((response) => console.log(response));
   }
 }
