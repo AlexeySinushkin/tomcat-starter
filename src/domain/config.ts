@@ -1,6 +1,5 @@
 import { CommonShape } from "./commonShape";
 import { PropertyShape } from "./property";
-import { Release } from "./release";
 import { CopyWarToRandomDir, RunTomcat, Task, TaskType } from "./taskTemplate";
 
 export type Variables = {
