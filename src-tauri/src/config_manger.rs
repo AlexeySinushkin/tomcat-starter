@@ -1,3 +1,4 @@
+use std::borrow::BorrowMut;
 use std::collections::BTreeMap;
 use std::error::Error;
 use std::fs::File;
@@ -10,15 +11,15 @@ use serde::{Deserialize, Serialize};
 
 const config_file_name : &str = "config.json";
 
-#[derive(Default)]
 pub struct ConfigManager {
-    current: Option<ConfigurationDto>,
+    pub current: Option<ConfigurationDto>,
 
 }
 
 impl ConfigManager  {    
-    pub fn set(mut self, config: ConfigurationDto) {
-        self.current = Some(config);
+    pub fn set(&mut self, config: ConfigurationDto) {
+        self.borrow_mut().current = Some(config);
+        //self.current = Some(config);
         self.save();
     }
     fn save(&self) { //-> Result<(), Box<dyn Error>>
