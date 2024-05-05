@@ -1,10 +1,10 @@
-use super::domain::property::{CommonShape, Property};
+
 use super::domain::tasks::{CopyWarToRandomDir, RunTomcat, TaskType};
 use crate::domain::config::{Configuration, ServerRun, Variables};
 use serde::{Deserialize, Serialize};
 use std::borrow::BorrowMut;
 use std::collections::BTreeMap;
-use std::error::Error;
+
 use std::fs::File;
 use std::io::{Read, Write};
 use std::path::Path;
