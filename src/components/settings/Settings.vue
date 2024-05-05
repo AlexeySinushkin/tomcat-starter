@@ -28,7 +28,7 @@ import Dashboard from "./Dashboard.vue";
           :servers="availableServerNames"
           :runs="runs"
           @update-in-config="saveServerRunsRequest"
-        />        
+        />
       </v-col>
       <v-col cols="6" v-else>
         <EditUnit
@@ -66,7 +66,7 @@ import Dashboard from "./Dashboard.vue";
       </v-col>
     </v-row>
     <v-row v-if="mode === DisplayMode.Dashboard">
-      <v-spacer/>
+      <v-spacer />
       <v-col cols="1">
         <v-btn @click="save">Save</v-btn>
       </v-col>
@@ -77,14 +77,18 @@ import Dashboard from "./Dashboard.vue";
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
 import BackendApi from "@/backendApi";
-import { Variables, ServerRun, Configuration, getEmptyConfig } from "@/domain/config";
+import {
+  Variables,
+  ServerRun,
+  Configuration,
+  getEmptyConfig,
+} from "@/domain/config";
 import { IntentionTask, TaskType } from "./intentionTask";
 import { Release } from "@/domain/release.ts";
 import { Platform } from "@/domain/platform";
 import { Server } from "@/domain/server";
 import { CommonShape } from "@/domain/commonShape";
 import ServerInstances from "./ServerInstances.vue";
-
 
 enum DisplayMode {
   Dashboard,
@@ -111,7 +115,7 @@ export default defineComponent({
       required: true,
     },
   },
-  data(): State {    
+  data(): State {
     let emptyConfig = getEmptyConfig();
     let result = {
       vars: emptyConfig.vars,
@@ -125,10 +129,10 @@ export default defineComponent({
       platformTask: new IntentionTask(TaskType.CreateNew, new Platform("")),
       serverTask: new IntentionTask(TaskType.CreateNew, new Server("")),
     };
-    this.api.getConfig().then((config : Configuration)=>{
+    this.api.getConfig().then((config: Configuration) => {
       this.vars = config.vars;
       this.runs = config.runs;
-    })
+    });
 
     return result;
   },
@@ -163,9 +167,7 @@ export default defineComponent({
       this.mode = DisplayMode.EditRelease;
     },
     saveReleaseRequested(newValue: CommonShape, oldValue: Release) {
-      let releases = this.vars.releases.filter(
-        (r) => r.name !== oldValue.name
-      );
+      let releases = this.vars.releases.filter((r) => r.name !== oldValue.name);
       releases.push(newValue);
       this.vars.releases = releases;
       this.mode = DisplayMode.Dashboard;
@@ -259,14 +261,15 @@ export default defineComponent({
       this.runs = runs;
     },
     save() {
-      let config : Configuration = {vars: this.vars, runs: this.runs};
-      this.api.setConfig(config);      
-    },    
+      let config: Configuration = { vars: this.vars, runs: this.runs };
+      this.api.setConfig(config);
+    },
   },
   computed: {
-    availableServerNames() {     
-      return this.vars.servers.map((server)=>server.name);
-    } 
-  }
+    availableServerNames() {
+      return this.vars.servers.map((server) => server.name);
+    },
+  },
 });
-</script>, getEmptyConfig
+</script>
+, getEmptyConfig

@@ -9,7 +9,7 @@ use std::fs::File;
 use std::io::{Read, Write};
 use std::path::Path;
 
-const config_file_name: &str = "config.json";
+const CONFIG_FILE_NAME: &str = "config.json";
 
 pub struct ConfigManager {
     pub current: Option<ConfigurationDto>,
@@ -20,23 +20,22 @@ impl ConfigManager {
         self.borrow_mut().current = Some(config);
         self.save();
     }
-    pub fn get(&mut self) -> &ConfigurationDto {
-        if self.current.is_some() {
-            return self.borrow_mut().current.as_ref().unwrap();
+    pub fn get(&mut self) -> Option<&ConfigurationDto> {
+        if self.current.is_none() {
+            self.load();            
         }
-        self.load();
-        return self.borrow_mut().current.as_ref().unwrap();
+        return self.borrow_mut().current.as_ref();   
     }
     fn save(&mut self) {
         //-> Result<(), Box<dyn Error>>
-        let mut output = File::create(Path::new(&config_file_name)).expect("Unable to create file");
+        let mut output = File::create(Path::new(&CONFIG_FILE_NAME)).expect("Unable to create file");
         if let Some(config) = &self.current {
             let j = serde_json::to_string(&config).expect("Serialize dto to json");
             output.write(j.as_bytes()).expect("Write config file");
         }
     }
     fn load(&mut self) {
-        let input = File::open(Path::new(&config_file_name));
+        let input = File::open(Path::new(&CONFIG_FILE_NAME));
         if let Ok(mut f) = input {
             let mut buffer = String::new();
             if let Ok(_) = f.read_to_string(&mut buffer) {
