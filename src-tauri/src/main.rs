@@ -71,3 +71,8 @@ fn get_config() -> CommandExecutionResult<ConfigurationDto> {
     }
     return CommandExecutionResult::error("Конфигурации не существует");
 }
+
+#[tauri::command]
+fn start_run(run: String, release: String, platform: String) -> CommandExecutionResult<bool> {
+    CommandExecutionResult::new_bool(true)
+}
